@@ -1,3 +1,12 @@
+@tree-default-border: #ddd;
+@tree-boder-radius: 4px;
+@tree-padding-vertical: 6px;
+@tree-padding-horizontal: 12px;
+@tree-margin-top: 5px;
+@tree-margin-bottom: 5px;
+@tree-max-width: 10em;
+@tree-hover-color: #f5f5f5;
+
 .tree {
 	li {
 		list-style-type: none;
@@ -5,5 +14,20 @@
 
 	ul.collapse {
 		display: none;
+	}
+}
+
+.tree-default {
+	a {
+		display: block;
+		max-width: @tree-max-width;
+		border: 1px @tree-default-border solid;
+		border-radius: @tree-boder-radius;
+		padding: @tree-padding-vertical @tree-padding-horizontal;
+		margin-top: @tree-margin-top;
+		margin-bottom: @tree-margin-bottom;
+		&:hover {
+			background-color: @tree-hover-color;
+		}
 	}
 }
