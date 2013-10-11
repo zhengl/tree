@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles/tree.css">	
+</head>
+<body>
+	<h1>Tree</h1>
+	<ul class="tree">
+		<li>
+			<a>A</a>
+		</li>
+		<li>
+			<a>B</a>
+			<ul>
+				<li>
+					<a>a</a>
+				</li>
+				<li>
+					<a>b</a>
+					<ul>
+						<li>
+							<a>1</a>
+						</li>
+						<li>
+							<a>1</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<a>C</a>
+		</li>
+	</ul>
+</body>
+<script type="text/javascript" src="bower_components/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/tree.js"></script>
+<script type="text/javascript">
+	$(".tree").tree();
+</script>
+</html>

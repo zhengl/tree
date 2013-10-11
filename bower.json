@@ -1,0 +1,27 @@
+{
+  "name": "tree",
+  "version": "0.0.0",
+  "authors": [
+    "Zheng Li <loylizh@gmail.com>"
+  ],
+  "description": "A tree view library based on bootstrap",
+  "main": "index.js",
+  "keywords": [
+    "tree",
+    "bootstrap"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.0.0"
+  },
+  "devDependencies": {
+    "bootstrap": "~3.0.0"
+  }
+}
