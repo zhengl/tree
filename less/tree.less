@@ -1,3 +1,4 @@
+@tree-default-color: #333;
 @tree-default-border: #ddd;
 @tree-boder-radius: 4px;
 @tree-padding-vertical: 6px;
@@ -7,18 +8,29 @@
 @tree-max-width: 10em;
 @tree-hover-color: #f5f5f5;
 
+@tree-icon-folder-close: "\e117";
+
 .tree {
 	li {
 		list-style-type: none;
+		&.tree-collapse ul {
+			display: none;
+		}
 	}
 
-	ul.collapse {
-		display: none;
+	a {
+		&:link,
+		&:visited,
+		&:hover,
+		&:active {
+			text-decoration:none;
+		}
 	}
 }
 
 .tree-default {
 	a {
+		color: @tree-default-color;
 		display: block;
 		max-width: @tree-max-width;
 		border: 1px @tree-default-border solid;
@@ -28,6 +40,12 @@
 		margin-bottom: @tree-margin-bottom;
 		&:hover {
 			background-color: @tree-hover-color;
+		}
+	}
+
+	li {
+		&.tree-collapse > a > span:before {
+			content: @tree-icon-folder-close;
 		}
 	}
 }
