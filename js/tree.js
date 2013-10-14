@@ -138,7 +138,7 @@
 			if($link.siblings('ul').length == 0) $link.parent().after($node)
 			else $link.siblings('ul').append($node)
 			
-			self.enableFeatures($link)
+			self.enableFeatures($node.find('a'))
 
 			$node.find('input').focus()
 		})
@@ -154,7 +154,7 @@
 			if($link.siblings('ul').length == 0) $link.parent().append($node)
 			else $link.siblings('ul').append($node)
 
-			self.enableFeatures($link)
+			self.enableFeatures($node.find('a'))
 
 			$node.find('input').focus()
 		})
