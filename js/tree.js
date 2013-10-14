@@ -6,10 +6,8 @@
 		var $links = this.$element.find('a')
 		$links.on('click', this.toggle)
 
-		if(this.$element.hasClass('tree-default')) this.addIcon($links)
-		if(this.$element.hasClass('tree-checkbox')) this.addCheckbox($links)
-		if(this.options.draggable) this.enableDraggable($links)
-		if(this.options.droppable) this.enableDroppable($links)
+		this.enableFeatures($links)
+		if(this.options.menu) this.addMenu()
 	}
 
 	Tree.DEFAULTS = {
@@ -19,6 +17,17 @@
 		droppable: false,
 		drop: drop,
 	}
+
+	Tree.prototype.enableFeatures = function($links) {
+		var self = this;
+		$links.each(function(){
+			var $this = $(this)
+			if(self.$element.hasClass('tree-default')) self.addIcon($this)
+			if(self.$element.hasClass('tree-checkbox')) self.addCheckbox($this)
+			if(self.options.draggable) self.enableDraggable($this)
+			if(self.options.droppable) self.enableDroppable($this)
+		})
+	};
 
 	function dragstart(event){
 		event.target.id = "tree-drag-temp-id"
@@ -49,7 +58,6 @@
 			var $this = $(this)
 			var $fileIcon = $('<span class="glyphicon glyphicon-file"></span>')
 			var $openIcon = $('<span class="glyphicon glyphicon-folder-open"></span>')
-			$this.html(" " + $this.html()) //dirty hack to prepend padding
 			if($this.siblings('ul').length == 0) $this.prepend($fileIcon)
 			else $this.prepend($openIcon)
 		})
@@ -83,6 +91,142 @@
 			.on('dragover', self.options.dragover)
 			.on('drop', self.options.drop)
 		})
+	};
+
+	Tree.prototype.addMenu = function() {
+		var $menu = this.createMenu()
+		var $menuWrapper = $('<div id="tree-dropdown"></div>')
+		$menuWrapper.append($menu)
+		this.$element.after($menuWrapper)
+
+		var self = this
+		$(document).on('contextmenu', '.tree a', function(e){
+			if($(e.target).prop('tagName') == 'A') {
+				self.setFocusedNode($(e.target))
+				$menuWrapper.css({
+					left: e.pageX,
+					top: e.pageY,
+				})
+				$menu.show();
+			} else {
+				$menu.hide();
+			}
+			return false;
+		})
+
+		$(document).on('click', function(){
+			$menu.hide();
+		})
+	};
+
+	Tree.prototype.createMenu = function() {
+		var $menu = $('<ul class="dropdown-menu"></ul>')
+		$menu.append(this.createNewFolderMenuItem())
+		$menu.append(this.createNewFileMenuItem())
+		$menu.append(this.createMenuItem('<span class="glyphicon glyphicon-search"></span> Find'))
+		$menu.append(this.createRenameMenuItem())
+		$menu.append(this.createDeleteMenuItem())
+		return $menu
+	};
+
+	Tree.prototype.createNewFolderMenuItem = function() {
+		var self = this
+		var $newFolderItem = this.createMenuItem('<span class="glyphicon glyphicon-folder-close"></span> New Folder')
+		$newFolderItem.on('click', function(){
+			var $link = self.getFocusedNode()
+			var $node = self.createFolderNode()
+			if($link.siblings('ul').length == 0) $link.parent().after($node)
+			else $link.siblings('ul').append($node)
+			
+			self.enableFeatures($link)
+
+			$node.find('input').focus()
+		})
+		return $newFolderItem
+	};
+
+	Tree.prototype.createNewFileMenuItem = function() {
+		var self = this
+		var $newFileItem = this.createMenuItem('<span class="glyphicon glyphicon-file"></span> New File')
+		$newFileItem.on('click', function(){
+			var $link = self.getFocusedNode()
+			var $node = self.createFileNode()
+			if($link.siblings('ul').length == 0) $link.parent().append($node)
+			else $link.siblings('ul').append($node)
+
+			self.enableFeatures($link)
+
+			$node.find('input').focus()
+		})
+		return $newFileItem
+	};
+
+	Tree.prototype.createRenameMenuItem = function() {
+		var self = this
+		var $renameItem = this.createMenuItem('<span class="glyphicon glyphicon-pencil"></span> Rename')
+		$renameItem.on('click', function(){
+			var $link = self.getFocusedNode()
+			var $input = self.createNodeInput()
+			$nodeName = $link.contents().last()
+			$input.val($nodeName.text())
+			$nodeName.replaceWith($input)
+
+			$input.focus()
+		})
+		return $renameItem
+	};	
+
+	Tree.prototype.createDeleteMenuItem = function() {
+		var self = this
+		var $deleteItem = this.createMenuItem('<span class="glyphicon glyphicon-remove"></span> Delete')
+		$deleteItem.on('click', function(){
+			var $link = self.getFocusedNode()
+			var $node = self.createFileNode()
+			$link.parent().remove()
+		})
+		return $deleteItem
+	};		
+
+	Tree.prototype.createMenuItem = function(itemName) {
+		return $('<li><a>' + itemName + '</a></li>')
+	};
+
+	Tree.prototype.setFocusedNode = function($link) {
+		this.focusedNode = $link
+	};
+
+	Tree.prototype.getFocusedNode = function() {
+		return this.focusedNode
+	};
+
+	Tree.prototype.createFolderNode = function() {
+		var $newFolderNode = $('<li><a></a><ul></ul></li>')
+		var $input = this.createNodeInput()
+		$newFolderNode.find('a').append($input)
+		return $newFolderNode
+	};
+
+	Tree.prototype.createFileNode = function() {
+		var $newFileNode = $('<li><a></a></li>')
+		var $input = this.createNodeInput()
+		$newFileNode.find('a').append($input)
+		return $newFileNode
+	};
+
+	Tree.prototype.createNodeInput = function() {
+		var $input = $('<input type="text">')
+		$input.on('keypress', function(event){
+			if (event.which == 13) {
+				var $this = $(this)
+				if($this.val() == '') {
+					$this.addClass('has-error')
+				} else {
+					$this.parent().append($this.val())
+					$this.remove()	
+				}
+			}
+		})
+		return $input
 	};
 
 	$.fn.tree = function (options) {

@@ -5,7 +5,6 @@
 @tree-padding-horizontal: 12px;
 @tree-margin-top: 5px;
 @tree-margin-bottom: 5px;
-@tree-max-width: 10em;
 @tree-hover-color: #f5f5f5;
 
 @tree-icon-folder-close: "\e117";
@@ -16,6 +15,8 @@
 @tree-checkbox-a-checked-background-color: #428bca;
 @tree-checkbox-a-checked-border: #428bca;
 @tree-checkbox-a-checked-hover-color: darken(@tree-checkbox-a-checked-background-color, 10%);
+
+@tree-input-invalid-border: #b94a48;
 
 .tree {
 	li {
@@ -39,7 +40,6 @@
 	a {
 		color: @tree-default-color;
 		display: inline-block;
-		max-width: @tree-max-width;
 		border: 1px @tree-default-border solid;
 		border-radius: @tree-boder-radius;
 		padding: @tree-padding-vertical @tree-padding-horizontal;
@@ -47,6 +47,10 @@
 		margin-bottom: @tree-margin-bottom;
 		&:hover {
 			background-color: @tree-hover-color;
+		}
+
+		span {
+			margin-right: 1em;
 		}
 	}
 
@@ -76,4 +80,17 @@
 			background-color: @tree-checkbox-a-checked-hover-color;
 		}
 	}
+}
+
+
+.tree {
+	input.has-error {
+		border-color: @tree-input-invalid-border;
+		-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+		box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	}
+}
+
+#tree-dropdown {
+	position: absolute;
 }
