@@ -10,7 +10,12 @@
 
 @tree-icon-folder-close: "\e117";
 
-@tree-checkbox-margin-right : @tree-padding-horizontal;
+@tree-checkbox-margin-right: -(@tree-padding-horizontal + 14px);
+@tree-checkbox-a-padding-left: (2 * @tree-padding-horizontal + 14px);
+@tree-checkbox-a-checked-color: #ffffff;
+@tree-checkbox-a-checked-background-color: #428bca;
+@tree-checkbox-a-checked-border: #428bca;
+@tree-checkbox-a-checked-hover-color: darken(@tree-checkbox-a-checked-background-color, 10%);
 
 .tree {
 	li {
@@ -53,6 +58,22 @@
 }
 
 .tree-checkbox {
+	a {
+		padding-left: @tree-checkbox-a-padding-left;
+	}
+
 	input[type="checkbox"] {
+		position: relative;
+		margin-right: -26px;
+		z-index: 99;
+	}
+
+	input[type="checkbox"]:checked + a {
+		color: @tree-checkbox-a-checked-color;
+		background-color: @tree-checkbox-a-checked-background-color;
+		border: 1px @tree-checkbox-a-checked-border solid;
+		&:hover {
+			background-color: @tree-checkbox-a-checked-hover-color;
+		}
 	}
 }

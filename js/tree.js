@@ -59,6 +59,10 @@
 		$links.each(function(){
 			var $this = $(this)
 			var $checkbox = $('<input type="checkbox">')
+			$checkbox.on('click', function(){
+				var checked = this.checked
+				$(this).siblings('ul').find('input[type="checkbox"]').prop('checked', checked)
+			})
 			$this.before($checkbox)
 		})
 	};
