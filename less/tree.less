@@ -10,6 +10,8 @@
 
 @tree-icon-folder-close: "\e117";
 
+@tree-checkbox-margin-right : @tree-padding-horizontal;
+
 .tree {
 	li {
 		list-style-type: none;
@@ -31,7 +33,7 @@
 .tree-default {
 	a {
 		color: @tree-default-color;
-		display: block;
+		display: inline-block;
 		max-width: @tree-max-width;
 		border: 1px @tree-default-border solid;
 		border-radius: @tree-boder-radius;
@@ -47,5 +49,10 @@
 		&.tree-collapse > a > span:before {
 			content: @tree-icon-folder-close;
 		}
+	}
+}
+
+.tree-checkbox {
+	input[type="checkbox"] {
 	}
 }

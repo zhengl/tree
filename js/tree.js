@@ -7,8 +7,9 @@
 		$links.on('click', this.toggle)
 
 		if(this.$element.hasClass('tree-default')) this.addIcon($links)
-		if(options.draggable) this.enableDraggable($links);
-		if(options.droppable) this.enableDroppable($links);
+		if(this.$element.hasClass('tree-checkbox')) this.addCheckbox($links)
+		if(this.options.draggable) this.enableDraggable($links)
+		if(this.options.droppable) this.enableDroppable($links)
 	}
 
 	Tree.DEFAULTS = {
@@ -52,7 +53,14 @@
 			if($this.siblings('ul').length == 0) $this.prepend($fileIcon)
 			else $this.prepend($openIcon)
 		})
+	};
 
+	Tree.prototype.addCheckbox = function($links) {
+		$links.each(function(){
+			var $this = $(this)
+			var $checkbox = $('<input type="checkbox">')
+			$this.before($checkbox)
+		})
 	};
 
 	Tree.prototype.enableDraggable = function($links) {
