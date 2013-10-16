@@ -18,6 +18,11 @@
 
 @tree-input-invalid-border: #b94a48;
 
+@tree-crud-a-found-color: #468847;
+@tree-crud-a-found-background-color: #dff0d8;
+@tree-crud-a-found-border: #d6e9c6;
+@tree-crud-a-found-hover-color: darken(@tree-crud-a-found-background-color, 10%);
+
 .tree {
 	li {
 		list-style-type: none;
@@ -93,4 +98,18 @@
 
 #tree-dropdown {
 	position: absolute;
+	span {
+		margin-right: 1em;
+	}
+}
+
+.tree {
+	a.found {
+		color: @tree-crud-a-found-color;
+		background-color: @tree-crud-a-found-background-color;
+		border: 1px @tree-crud-a-found-border solid;
+		&:hover {
+			background-color: @tree-crud-a-found-hover-color;
+		}
+	}
 }

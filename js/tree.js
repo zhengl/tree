@@ -94,9 +94,9 @@
 	};
 
 	Tree.prototype.addMenu = function() {
-		var $menu = this.createMenu()
+		this.$menu = this.createMenu()
 		var $menuWrapper = $('<div id="tree-dropdown"></div>')
-		$menuWrapper.append($menu)
+		$menuWrapper.append(this.$menu)
 		this.$element.after($menuWrapper)
 
 		var self = this
@@ -107,15 +107,15 @@
 					left: e.pageX,
 					top: e.pageY,
 				})
-				$menu.show();
+				self.$menu.show();
 			} else {
-				$menu.hide();
+				self.$menu.hide();
 			}
 			return false;
 		})
 
 		$(document).on('click', function(){
-			$menu.hide();
+			self.$menu.hide()
 		})
 	};
 
@@ -123,16 +123,17 @@
 		var $menu = $('<ul class="dropdown-menu"></ul>')
 		$menu.append(this.createNewFolderMenuItem())
 		$menu.append(this.createNewFileMenuItem())
-		$menu.append(this.createMenuItem('<span class="glyphicon glyphicon-search"></span> Find'))
 		$menu.append(this.createRenameMenuItem())
 		$menu.append(this.createDeleteMenuItem())
+		$menu.append(this.createFindMenuItem())
 		return $menu
 	};
 
 	Tree.prototype.createNewFolderMenuItem = function() {
 		var self = this
-		var $newFolderItem = this.createMenuItem('<span class="glyphicon glyphicon-folder-close"></span> New Folder')
-		$newFolderItem.on('click', function(){
+		var $newFolderItem = this.createMenuItem('<span class="glyphicon glyphicon-folder-close"></span>New Folder')
+		$newFolderItem.on('click', function(event){
+			event.stopPropagation()
 			var $link = self.getFocusedNode()
 			var $node = self.createFolderNode()
 			if($link.siblings('ul').length == 0) $link.parent().after($node)
@@ -141,14 +142,17 @@
 			self.enableFeatures($node.find('a'))
 
 			$node.find('input').focus()
+
+			self.$menu.hide()
 		})
 		return $newFolderItem
 	};
 
 	Tree.prototype.createNewFileMenuItem = function() {
 		var self = this
-		var $newFileItem = this.createMenuItem('<span class="glyphicon glyphicon-file"></span> New File')
-		$newFileItem.on('click', function(){
+		var $newFileItem = this.createMenuItem('<span class="glyphicon glyphicon-file"></span>New File')
+		$newFileItem.on('click', function(event){
+			event.stopPropagation()
 			var $link = self.getFocusedNode()
 			var $node = self.createFileNode()
 			if($link.siblings('ul').length == 0) $link.parent().append($node)
@@ -157,32 +161,49 @@
 			self.enableFeatures($node.find('a'))
 
 			$node.find('input').focus()
+
+			self.$menu.hide()
 		})
 		return $newFileItem
 	};
 
+	Tree.prototype.createFindMenuItem = function() {
+		var self = this
+		var $findItem = this.createMenuItem('<span class="glyphicon glyphicon-search"></span>')
+		var $findItemInput = this.createFindInput()
+		$findItem.find('a').append($findItemInput)
+		return $findItem
+	};	
+
 	Tree.prototype.createRenameMenuItem = function() {
 		var self = this
-		var $renameItem = this.createMenuItem('<span class="glyphicon glyphicon-pencil"></span> Rename')
-		$renameItem.on('click', function(){
+		var $renameItem = this.createMenuItem('<span class="glyphicon glyphicon-pencil"></span>Rename')
+		$renameItem.on('click', function(event){
+			event.stopPropagation()
 			var $link = self.getFocusedNode()
+			$link.removeClass('found')
 			var $input = self.createNodeInput()
 			$nodeName = $link.contents().last()
 			$input.val($nodeName.text())
 			$nodeName.replaceWith($input)
 
 			$input.focus()
+
+			self.$menu.hide()
 		})
 		return $renameItem
 	};	
 
 	Tree.prototype.createDeleteMenuItem = function() {
 		var self = this
-		var $deleteItem = this.createMenuItem('<span class="glyphicon glyphicon-remove"></span> Delete')
-		$deleteItem.on('click', function(){
+		var $deleteItem = this.createMenuItem('<span class="glyphicon glyphicon-remove"></span>Delete')
+		$deleteItem.on('click', function(event){
+			event.stopPropagation()
 			var $link = self.getFocusedNode()
 			var $node = self.createFileNode()
 			$link.parent().remove()
+
+			self.$menu.hide()
 		})
 		return $deleteItem
 	};		
@@ -225,6 +246,34 @@
 					$this.remove()	
 				}
 			}
+		})
+		return $input
+	};
+
+	Tree.prototype.createFindInput = function() {
+		var self = this;
+		var $input = $('<input type="text" placeholder="Find">')
+		$input.on('keypress', function(event){
+			if (event.which == 13) {
+				var $this = $(this)
+				if($this.val() == '') {
+					$this.addClass('has-error')
+				} else {
+					var regex = new RegExp($this.val(), 'i')
+					self.$element.find('a').each(function(){
+						if(regex.test($(this).text())) {
+							$(this).addClass('found')
+							$(this).parent().parents().removeClass('tree-collapse')
+						}
+						else $(this).removeClass('found')
+					})
+					$this.val('')
+					self.$menu.hide()
+				}
+			}
+		})
+		$input.on('click', function(event){
+			event.stopPropagation()
 		})
 		return $input
 	};
