@@ -19,13 +19,13 @@
 	}
 
 	Tree.prototype.enableFeatures = function($links) {
-		var self = this;
+		var _this = this;
 		$links.each(function(){
 			var $this = $(this)
-			if(self.$element.hasClass('tree-default')) self.addIcon($this)
-			if(self.$element.hasClass('tree-checkbox')) self.addCheckbox($this)
-			if(self.options.draggable) self.enableDraggable($this)
-			if(self.options.droppable) self.enableDroppable($this)
+			if(_this.$element.hasClass('tree-default')) _this.addIcon($this)
+			if(_this.$element.hasClass('tree-checkbox')) _this.addCheckbox($this)
+			if(_this.options.draggable) _this.enableDraggable($this)
+			if(_this.options.droppable) _this.enableDroppable($this)
 		})
 	};
 
@@ -76,20 +76,20 @@
 	};
 
 	Tree.prototype.enableDraggable = function($links) {
-		var self = this
+		var _this = this
 		$links.each(function(){
 			$(this).parent()
 			.attr('draggable', true)
-			.on('dragstart', self.options.dragstart)
+			.on('dragstart', _this.options.dragstart)
 		})
 	};
 
 	Tree.prototype.enableDroppable = function($links) {
-		var self = this
+		var _this = this
 		$links.each(function(){
 			$(this)
-			.on('dragover', self.options.dragover)
-			.on('drop', self.options.drop)
+			.on('dragover', _this.options.dragover)
+			.on('drop', _this.options.drop)
 		})
 	};
 
@@ -99,23 +99,23 @@
 		$menuWrapper.append(this.$menu)
 		this.$element.after($menuWrapper)
 
-		var self = this
+		var _this = this
 		$(document).on('contextmenu', '.tree a', function(e){
 			if($(e.target).prop('tagName') == 'A') {
-				self.setFocusedNode($(e.target))
+				_this.setFocusedNode($(e.target))
 				$menuWrapper.css({
 					left: e.pageX,
 					top: e.pageY,
 				})
-				self.$menu.show();
+				_this.$menu.show();
 			} else {
-				self.$menu.hide();
+				_this.$menu.hide();
 			}
 			return false;
 		})
 
 		$(document).on('click', function(){
-			self.$menu.hide()
+			_this.$menu.hide()
 		})
 	};
 
@@ -130,83 +130,83 @@
 	};
 
 	Tree.prototype.createNewFolderMenuItem = function() {
-		var self = this
+		var _this = this
 		var $newFolderItem = this.createMenuItem('<span class="glyphicon glyphicon-folder-close"></span>New Folder')
 		$newFolderItem.on('click', function(event){
 			event.stopPropagation()
-			var $link = self.getFocusedNode()
-			var $node = self.createFolderNode()
+			var $link = _this.getFocusedNode()
+			var $node = _this.createFolderNode()
 			if($link.siblings('ul').length == 0) $link.parent().after($node)
 			else $link.siblings('ul').append($node)
-			
-			self.enableFeatures($node.find('a'))
+
+			_this.enableFeatures($node.find('a'))
 
 			$node.find('input').focus()
 
-			self.$menu.hide()
+			_this.$menu.hide()
 		})
 		return $newFolderItem
 	};
 
 	Tree.prototype.createNewFileMenuItem = function() {
-		var self = this
+		var _this = this
 		var $newFileItem = this.createMenuItem('<span class="glyphicon glyphicon-file"></span>New File')
 		$newFileItem.on('click', function(event){
 			event.stopPropagation()
-			var $link = self.getFocusedNode()
-			var $node = self.createFileNode()
+			var $link = _this.getFocusedNode()
+			var $node = _this.createFileNode()
 			if($link.siblings('ul').length == 0) $link.parent().append($node)
 			else $link.siblings('ul').append($node)
 
-			self.enableFeatures($node.find('a'))
+			_this.enableFeatures($node.find('a'))
 
 			$node.find('input').focus()
 
-			self.$menu.hide()
+			_this.$menu.hide()
 		})
 		return $newFileItem
 	};
 
 	Tree.prototype.createFindMenuItem = function() {
-		var self = this
+		var _this = this
 		var $findItem = this.createMenuItem('<span class="glyphicon glyphicon-search"></span>')
 		var $findItemInput = this.createFindInput()
 		$findItem.find('a').append($findItemInput)
 		return $findItem
-	};	
+	};
 
 	Tree.prototype.createRenameMenuItem = function() {
-		var self = this
+		var _this = this
 		var $renameItem = this.createMenuItem('<span class="glyphicon glyphicon-pencil"></span>Rename')
 		$renameItem.on('click', function(event){
 			event.stopPropagation()
-			var $link = self.getFocusedNode()
+			var $link = _this.getFocusedNode()
 			$link.removeClass('found')
-			var $input = self.createNodeInput()
+			var $input = _this.createNodeInput()
 			$nodeName = $link.contents().last()
 			$input.val($nodeName.text())
 			$nodeName.replaceWith($input)
 
 			$input.focus()
 
-			self.$menu.hide()
+			_this.$menu.hide()
 		})
 		return $renameItem
-	};	
+	};
 
 	Tree.prototype.createDeleteMenuItem = function() {
-		var self = this
+		var _this = this
 		var $deleteItem = this.createMenuItem('<span class="glyphicon glyphicon-remove"></span>Delete')
 		$deleteItem.on('click', function(event){
 			event.stopPropagation()
-			var $link = self.getFocusedNode()
-			var $node = self.createFileNode()
+			var $link = _this.getFocusedNode()
+			var $node = _this.createFileNode()
 			$link.parent().remove()
 
-			self.$menu.hide()
+			_this.$menu.hide()
 		})
 		return $deleteItem
-	};		
+	};
 
 	Tree.prototype.createMenuItem = function(itemName) {
 		return $('<li><a>' + itemName + '</a></li>')
@@ -243,7 +243,7 @@
 					$this.addClass('has-error')
 				} else {
 					$this.parent().append($this.val())
-					$this.remove()	
+					$this.remove()
 				}
 			}
 		})
@@ -251,7 +251,7 @@
 	};
 
 	Tree.prototype.createFindInput = function() {
-		var self = this;
+		var _this = this;
 		var $input = $('<input type="text" placeholder="Find">')
 		$input.on('keypress', function(event){
 			if (event.which == 13) {
@@ -260,7 +260,7 @@
 					$this.addClass('has-error')
 				} else {
 					var regex = new RegExp($this.val(), 'i')
-					self.$element.find('a').each(function(){
+					_this.$element.find('a').each(function(){
 						if(regex.test($(this).text())) {
 							$(this).addClass('found')
 							$(this).parent().parents().removeClass('tree-collapse')
@@ -268,7 +268,7 @@
 						else $(this).removeClass('found')
 					})
 					$this.val('')
-					self.$menu.hide()
+					_this.$menu.hide()
 				}
 			}
 		})
@@ -278,15 +278,31 @@
 		return $input
 	};
 
-	$.fn.tree = function (options) {
-		return this.each(function () {
-			var $this = $(this)
-			var data = $this.data('bsx.tree')
-
-			if (!data) $this.data('bsx.tree', (data = new Tree(this, options)))
+	Tree.prototype.toJson = function($element) {
+		var result = {}
+		var _this = this
+		var $root = $element || this.$element
+		$root.children('li').each(function() {
+			var key = $(this).children('a').text()
+			if($(this).children('ul').length == 0) {
+				result[key] = {type: 'file'}
+			} else {
+				result[key] = {type: 'dir'}
+				result[key].children = _this.toJson($(this).children('ul'))
+			}
 		})
+		return result
+	};
+
+	$.fn.tree = function (options) {
+		var $this = $(this)
+		var data = $this.data('bsx.tree')
+
+		if (!data) $this.data('bsx.tree', (data = new Tree(this, options)))
+		return data
 	}
 
 	$.fn.tree.Constructor = Tree
 
 }(window.jQuery)
+

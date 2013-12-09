@@ -33,6 +33,7 @@
 			<a>C</a>
 		</li>
 	</ul>
+	<button onclick="console.log(tree.toJson())">JSON</button>
 </body>
 <script type="text/javascript" src="bower_components/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="js/tree.js"></script>
@@ -42,7 +43,7 @@
 	// 	draggable: true,
 	// 	droppable: true,
 	// });
-$(".tree").tree({
+var tree = $(".tree").tree({
 	menu: true,
 })
 </script>
