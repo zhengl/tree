@@ -22,9 +22,6 @@
 						<li>
 							<a>1</a>
 						</li>
-						<li>
-							<a>1</a>
-						</li>
 					</ul>
 				</li>
 			</ul>
@@ -33,17 +30,32 @@
 			<a>C</a>
 		</li>
 	</ul>
-	<button onclick="console.log(tree.toJson())">JSON</button>
+	<button onclick="console.log(tree.toJson())">To JSON</button>
+	<button onclick="tree.fromJson(json);">From JSON</button>
 </body>
 <script type="text/javascript" src="bower_components/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="js/tree.js"></script>
 <script type="text/javascript">
-// $(".tree").tree()
-	// $(".tree").tree({
-	// 	draggable: true,
-	// 	droppable: true,
-	// });
+var json = {
+	A: {
+		type: 'file',
+	},
+	B: {
+		type: 'dir',
+		children: {
+			a: {
+				type: 'file'
+			},
+			b: {
+				type: 'file'
+			}
+		}
+	},
+
+}
 var tree = $(".tree").tree({
+	draggable: true,
+	droppable: true,
 	menu: true,
 })
 </script>

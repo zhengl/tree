@@ -3,11 +3,8 @@
 	var Tree = function (element, options) {
 		this.$element = $(element)
 		this.options = $.extend({}, Tree.DEFAULTS, options)
-		var $links = this.$element.find('a')
-		$links.on('click', this.toggle)
-
-		this.enableFeatures($links)
-		if(this.options.menu) this.addMenu()
+		
+		this.initialize();
 	}
 
 	Tree.DEFAULTS = {
@@ -17,6 +14,14 @@
 		droppable: false,
 		drop: drop,
 	}
+
+	Tree.prototype.initialize = function() {
+		var $links = this.$element.find('a')
+		$links.on('click', this.toggle)
+
+		this.enableFeatures($links)
+		if(this.options.menu) this.addMenu()
+	};
 
 	Tree.prototype.enableFeatures = function($links) {
 		var _this = this;
@@ -294,6 +299,31 @@
 		return result
 	};
 
+	Tree.prototype.fromJson = function(json) {
+		this.clear();
+		this.fromJsonToPlainHtml(json, this.$element);
+		this.initialize();
+	};
+
+	Tree.prototype.fromJsonToPlainHtml = function(json, $element) {
+		for(var node in json) {
+			if(json[node].type == 'file') {
+				$element.append($('<li><a>' + node + '</a></li>'))
+			} 
+			else if(json[node].type == 'dir') {
+				var $child = $('<li></li>')
+				$child.append($('<a>' + node + '</a>'))
+				$child.append(this.fromJsonToPlainHtml(json[node].children, $('<ul></ul>')))
+				$element.append($child)
+			}
+		}
+		return $element;
+	};
+
+	Tree.prototype.clear = function() {
+		this.$element.empty();
+	};
+
 	$.fn.tree = function (options) {
 		var $this = $(this)
 		var data = $this.data('bsx.tree')
@@ -303,6 +333,10 @@
 	}
 
 	$.fn.tree.Constructor = Tree
+
+	$.fn.outerHTML = function() {
+	  return jQuery('<div />').append(this.eq(0).clone()).html();
+	};
 
 }(window.jQuery)
 
