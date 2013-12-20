@@ -300,12 +300,12 @@
 	};
 
 	Tree.prototype.fromJson = function(json) {
-		this.clear();
-		this.fromJsonToPlainHtml(json, this.$element);
-		this.initialize();
+		this.clear()
+		fromJsonToPlainHtml(json, this.$element)
+		this.initialize()
 	};
 
-	Tree.prototype.fromJsonToPlainHtml = function(json, $element) {
+	function fromJsonToPlainHtml(json, $element) {
 		for(var node in json) {
 			if(json[node].type == 'file') {
 				$element.append($('<li><a>' + node + '</a></li>'))
@@ -313,16 +313,114 @@
 			else if(json[node].type == 'dir') {
 				var $child = $('<li></li>')
 				$child.append($('<a>' + node + '</a>'))
-				$child.append(this.fromJsonToPlainHtml(json[node].children, $('<ul></ul>')))
+				$child.append(fromJsonToPlainHtml(json[node].children, $('<ul></ul>')))
 				$element.append($child)
 			}
 		}
-		return $element;
-	};
+		return $element
+	}
 
 	Tree.prototype.clear = function() {
 		this.$element.empty();
 	};
+
+	Tree.prototype.calculateMappings = function($dest) {
+		var mappings = []
+		eachSubStree(this.$element).forEach(function(srcSubtree) {
+			eachSubStree($dest).forEach(function(destSubtree) {
+				if(!isCompared($(srcSubtree)) && isIdentical($(srcSubtree), $(destSubtree))) {
+					addToMappings(mappings, srcSubtree, destSubtree)
+					mark($(srcSubtree))
+				}
+			})
+		})
+		clearAllMarks(this.$element)
+	};
+
+	function eachSubStree($tree){
+		var subtrees = []
+		var children = $tree.children('li').get()
+		children.forEach(function(child) {
+			subtrees.push(child)
+			if(hasChild(child)) {
+				Array.prototype.push.apply(subtrees, eachSubStree($(child).children('ul:first')))
+			} 
+		})
+		return subtrees
+	}
+
+	function isCompared($tree) {
+		return $tree.hasClass('compared')
+	}
+
+	function mark($tree) {
+		$tree.find('li').addClass('compared')
+	}
+
+	function clearAllMarks($tree) {
+		$tree.find('li').removeClass('compared')
+	}
+
+	function hasChild(child) {
+		return $(child).children('ul:first').length !== 0
+	}
+
+	function isIdentical($srcTree, $destTree) {
+		return hasSameName($srcTree, $destTree)
+		&& hasSubtrees($srcTree, $destTree)
+		&& hasSameSubtrees($srcTree, $destTree)
+	}
+
+	function hasSameName($srcTree, $destTree) {
+		return getName($srcTree) == getName($destTree)
+	}
+
+	function hasSubtrees($srcTree, $destTree) {
+		return $srcTree.children('ul:first').length == $destTree.children('ul:first').length
+		&& getChildren($srcTree).length == getChildren($destTree).length
+	}
+
+	function hasSameSubtrees($srcTree, $destTree) {
+		var hasSameSubtrees = true
+		if($srcTree.children('ul:first').length !== 0) {
+			var srcChildren = getChildren($srcTree).sort(compareNode)
+			var destChildren = getChildren($destTree).sort(compareNode)
+			for(var i = 0; i < srcChildren.length; i++) {
+				hasSameSubtrees = hasSameSubtrees && isIdentical($(srcChildren[i]), $(destChildren[i]))
+			}
+		}
+		return hasSameSubtrees
+	}
+
+	function compareNode(node1, node2) {
+		var node1Name = getName($(node1))
+		var node2Name = getName($(node2))
+		if(node1Name > node2Name) {
+			return 1
+		} else if(node1Name < node2Name) {
+			return -1
+		} else {
+			return 0
+		}
+	}
+
+	function addToMappings(mappings, srcTree, destTree){
+		mappings.push({src: getPath($(srcTree)), dest: getPath($(destTree))})
+	}
+
+	function getPath($tree) {
+		return $tree.parents('li').get().reverse().map(function(node){
+			return getName($(node))
+		}).join('/') + '/' + getName($tree)
+	}
+
+	function getName($node) {
+		return $node.children('a:first').text()
+	}
+
+	function getChildren($node) {
+		return $node.children('ul:first').children('li')
+	}
 
 	$.fn.tree = function (options) {
 		var $this = $(this)

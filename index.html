@@ -6,10 +6,34 @@
 </head>
 <body>
 	<h1>Tree</h1>
-	<ul class="tree tree-default tree-checkbox">
+	<ul id="src" class="tree tree-default tree-checkbox">
 		<li>
 			<a>A</a>
 		</li>
+		<li>
+			<a>Z</a>
+			<ul>
+				<li>
+					<a>a</a>
+				</li>
+				<li>
+					<a>b</a>
+					<ul>
+						<li>
+							<a>2</a>
+						</li>					
+						<li>
+							<a>1</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<a>C</a>
+		</li>
+	</ul>
+	<ul id="dest" class="tree tree-default tree-checkbox">
 		<li>
 			<a>B</a>
 			<ul>
@@ -22,12 +46,12 @@
 						<li>
 							<a>1</a>
 						</li>
+						<li>
+							<a>2</a>
+						</li>
 					</ul>
 				</li>
 			</ul>
-		</li>
-		<li>
-			<a>C</a>
 		</li>
 	</ul>
 	<button onclick="console.log(tree.toJson())">To JSON</button>
@@ -53,10 +77,11 @@ var json = {
 	},
 
 }
-var tree = $(".tree").tree({
-	draggable: true,
-	droppable: true,
-	menu: true,
+var tree = $("#src").tree({
+	// draggable: true,
+	// droppable: true,
+	// menu: true,
 })
+tree.calculateMappings($('#dest'))
 </script>
 </html>
